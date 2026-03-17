@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mentor Pro | Ultimate Affiliate System</title>
+    <!-- Icons and Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Markdown Parser for AI Chat Formatting -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <style>
+        /* === COLOR THEME & GLOBAL STYLES === */
+        :root { 
+            --bg-dark: #090e17; --bg-card: #151f32; --text-main: #f8fafc; --text-muted: #94a3b8;
+            --accent: #00d2ff; --accent-hover: #00a8cc; --border: #2a3b5c; --danger: #ff4757;
+            --gradient: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-dark); color: var(--text-main); overflow-x: hidden; scroll-behavior: smooth; }
+
+        /* === TOP URGENCY BANNER === */
+        .urgency-bar { background: var(--danger); color: #fff; text-align: center; padding: 8px; font-size: 12px; font-weight: 700; letter-spacing: 1px; position: relative; z-index: 1001; }
+        .blink-text { animation: blink 1.5s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+        /* === NAVIGATION BAR === */
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: rgba(9, 14, 23, 0.9); backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .logo { font-size: 22px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 8px; cursor: pointer; }
+        .logo i { color: var(--accent); }
+        
+        /* 3-Dot Menu Dropdown */
+        .menu-container { position: relative; }
+        .dot-btn { background: none; border: none; color: var(--text-main); font-size: 24px; cursor: pointer; padding: 5px 10px; transition: 0.3s; }
+        .dot-btn:hover { color: var(--accent); }
+        .nav-dropdown { position: absolute; right: 0; top: 40px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; width: 200px; display: none; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.8); overflow: hidden; animation: dropAnim 0.3s ease; }
+        .nav-dropdown.active { display: flex; }
+        @keyframes dropAnim { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .nav-dropdown a { padding: 15px 20px; color: var(--text-main); text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); transition: 0.2s; cursor: pointer; }
+        .nav-dropdown a:hover { background: rgba(0, 210, 255, 0.1); color: var(--accent); }
+
+        /* === PAGE SETUP & ANIMATIONS === */
+        .page { display: none; width: 100%; min-height: calc(100vh - 65px); animation: fadeIn 0.4s ease; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .hidden-el { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .show-el { opacity: 1; transform: translateY(0); }
+
+        /* === 1. LANDING PAGE STYLES === */
+        .hero { text-align: center; padding: 60px 20px 40px; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; width: 400px; height: 400px; background: var(--accent); filter: blur(200px); opacity: 0.15; top: -100px; left: 50%; transform: translateX(-50%); z-index: -1; }
+        .badge { display: inline-block; background: rgba(0, 210, 255, 0.1); color: var(--accent); padding: 6px 18px; border-radius: 20px; font-size: 13px; font-weight: 700; margin-bottom: 20px; border: 1px solid rgba(0, 210, 255, 0.3); }
+        .hero h1 { font-size: 40px; font-weight: 800; line-height: 1.2; margin-bottom: 20px; }
+        .hero h1 span { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p { color: var(--text-muted); font-size: 16px; margin-bottom: 35px; max-width: 600px; margin-left: auto; margin-right: auto; line-height: 1.6; }
+        
+        .cta-btn { display: inline-block; background: var(--gradient); color: #fff; font-size: 18px; font-weight: 800; padding: 16px 45px; border-radius: 30px; border: none; cursor: pointer; box-shadow: 0 10px 25px rgba(0, 210, 255, 0.3); transition: 0.3s; width: 100%; max-width: 350px; text-transform: uppercase; letter-spacing: 1px; }
+        .cta-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(0, 210, 255, 0.5); }
+        
+        /* Fake Timer */
+        .timer-box { display: flex; justify-content: center; gap: 15px; margin-top: 25px; }
+        .time-block { background: var(--bg-card); border: 1px solid var(--border); padding: 10px 15px; border-radius: 8px; width: 70px; }
+        .time-block span { display: block; font-size: 20px; font-weight: 800; color: var(--accent); }
+        .time-block p { font-size: 10px; color: var(--text-muted); margin: 0; }
+
+        /* Social Proof Strip */
+        .proof-section { background: #111827; padding: 40px 20px; text-align: center; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+        .proof-grid { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; max-width: 900px; margin: 0 auto; }
+        .proof-item { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 15px; }
+        .proof-item i { color: var(--accent); font-size: 20px; }
+
+        /* Horizontal Reviews Slider */
+        .reviews-section { padding: 80px 0; max-width: 100%; margin: 0 auto; overflow: hidden; background: #0b111d; position: relative; }
+        .section-title { text-align:center; font-size: 32px; font-weight: 800; margin-bottom: 10px; padding: 0 20px; }
+        .swipe-indicator { text-align: center; color: var(--accent); font-size: 14px; font-weight: 600; margin-bottom: 30px; display: flex; align-items: center; justify-content: center; gap: 10px; animation: bounceX 2s infinite; }
+        @keyframes bounceX { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(10px); } }
+        .slider-wrapper { position: relative; max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .reviews-slider { display: flex; gap: 20px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; -ms-overflow-style: none; padding-bottom: 20px; cursor: grab; }
+        .reviews-slider::-webkit-scrollbar { display: none; }
+        .review-card { min-width: 320px; max-width: 350px; background: linear-gradient(145deg, var(--bg-card), #141c29); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 25px; scroll-snap-align: start; flex: 0 0 auto; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .stars { color: #fbbf24; margin-bottom: 15px; font-size: 14px; letter-spacing: 1px; }
+        .review-text { font-size: 15px; color: #cbd5e1; line-height: 1.6; margin-bottom: 20px; font-style: italic; }
+        .reviewer { font-weight: 700; color: var(--text-main); font-size: 15px; display: flex; align-items: center; gap: 10px; }
+        .reviewer div { width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: bold; }
+
+        /* === 2 & 3. FORMS (PAYMENT / LOGIN) === */
+        .form-container { max-width: 420px; margin: 40px auto; background: var(--bg-card); padding: 40px 25px; border-radius: 20px; border: 1px solid var(--border); text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        .form-group { margin-bottom: 20px; text-align: left; }
+        .form-group label { display: block; margin-bottom: 8px; font-size: 13px; font-weight: 600; color: var(--text-muted); }
+        .form-group input { width: 100%; padding: 14px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-dark); color: #fff; outline: none; font-size: 15px; transition: 0.3s; }
+        .form-group input:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(0, 210, 255, 0.2); }
+        .qr-box { background: #fff; padding: 10px; border-radius: 12px; width: 220px; height: 220px; margin: 20px auto; }
+        .qr-box img { width: 100%; height: 100%; }
+
+        /* === 4. MAIN DASHBOARD LAYOUT === */
+        .dashboard-layout { display: flex; height: calc(100vh - 65px); width: 100%; overflow: hidden; }
+        .dash-sidebar { width: 260px; background: var(--bg-card); border-right: 1px solid var(--border); padding: 20px 15px; display: flex; flex-direction: column; gap: 10px; transition: 0.3s; z-index: 50; }
+        .menu-item { padding: 14px 15px; border-radius: 10px; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; gap: 12px; font-weight: 600; transition: 0.2s; }
+        .menu-item.active, .menu-item:hover { background: rgba(0, 210, 255, 0.1); color: var(--text-main); border-left: 3px solid var(--accent); }
+        .dash-content { flex: 1; position: relative; background: var(--bg-dark); overflow: hidden; } 
+        .dash-section { display: none; height: 100%; width: 100%; }
+        .dash-section.active { display: block; }
+        .dash-toggle-btn { display: none; background: none; border: none; color: #fff; font-size: 20px; cursor: pointer; }
+
+        /* === NATIVE AI CHAT UI === */
+        .chat-wrapper { display: flex; flex-direction: column; height: 100%; width: 100%; max-width: 900px; margin: 0 auto; background: var(--bg-dark); }
+        .chat-box { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 20px; scroll-behavior: smooth; }
+        .message-row { display: flex; gap: 15px; align-items: flex-start; max-width: 85%; }
+        .message-row.user { flex-direction: row-reverse; align-self: flex-end; }
+        .avatar { min-width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; }
+        .user .avatar { background: var(--accent); color: #000; }
+        .ai .avatar { background: #3b82f6; color: #fff; }
+        .msg-text { background: var(--bg-card); padding: 15px; border: 1px solid var(--border); font-size: 15px; line-height: 1.6; color: var(--text-main); word-wrap: break-word; border-radius: 0 15px 15px 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .user .msg-text { border-radius: 15px 0 15px 15px; background: rgba(0, 210, 255, 0.05); border-color: rgba(0, 210, 255, 0.2); }
+        
+        .msg-text p { margin-bottom: 10px; }
+        .msg-text p:last-child { margin-bottom: 0; }
+        .msg-text strong { color: var(--accent); }
+        .msg-text ul, .msg-text ol { margin-left: 20px; margin-bottom: 10px; }
+        .msg-text pre { background: #000; padding: 10px; border-radius: 8px; overflow-x: auto; margin-top: 10px; border: 1px solid var(--border); }
+        .msg-text code { font-family: monospace; color: #fbbf24; font-size: 13px; }
+
+        .chat-input-area { padding: 15px 20px; background: var(--bg-card); border-top: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+        .chat-input-area input { flex: 1; background: var(--bg-dark); border: 1px solid var(--border); color: #fff; padding: 14px 20px; border-radius: 30px; font-size: 15px; outline: none; transition: 0.3s; }
+        .chat-input-area input:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(0, 210, 255, 0.1); }
+        .send-btn { background: var(--gradient); border: none; color: #000; width: 48px; height: 48px; border-radius: 50%; font-size: 18px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; }
+        .send-btn:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(0, 210, 255, 0.4); }
+        
+        .typing-indicator { font-size: 14px; color: var(--accent); display: flex; align-items: center; gap: 8px; }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 30px; }
+            .dash-sidebar { position: fixed; left: -100%; height: 100%; }
+            .dash-sidebar.open { left: 0; }
+            .dash-toggle-btn { display: block; margin-right: 15px; }
+            .dash-content { padding: 0; } 
+            .message-row { max-width: 95%; }
+            .chat-box { padding: 15px 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- URGENCY BAR -->
+<div class="urgency-bar" id="urgencyBar">
+    <span class="blink-text">⚠️ ALERT: ONLY 4 SEATS LEFT FOR LIVE MASTERCLASS. PRICE INCREASING SOON!</span>
+</div>
+
+<!-- TOP NAVIGATION -->
+<nav>
+    <div style="display: flex; align-items: center;">
+        <button class="dash-toggle-btn" id="dashMenuBtn" onclick="toggleDashSidebar()"><i class="fa-solid fa-bars"></i></button>
+        <div class="logo" onclick="handleLogoClick()"><i class="fa-solid fa-bolt"></i> Mentor Pro</div>
+    </div>
+    
+    <!-- 3-DOT MENU -->
+    <div class="menu-container">
+        <button class="dot-btn" onclick="toggleNavDropdown()"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+        <div class="nav-dropdown" id="mainNavDrop">
+            <a id="menuStart" onclick="showPage('paymentPage'); toggleNavDropdown();"><i class="fa-solid fa-rocket"></i> Get Started</a>
+            <a id="menuLogin" onclick="showPage('loginPage'); toggleNavDropdown();"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
+            <a id="menuLogout" onclick="logout(); toggleNavDropdown();" style="display:none; color:var(--danger);"><i class="fa-solid fa-power-off"></i> Logout</a>
+        </div>
+    </div>
+</nav>
+
+<!-- ========================================== -->
+<!-- 1. LANDING PAGE                            -->
+<!-- ========================================== -->
+<div id="landingPage" class="page active">
+    
+    <section class="hero hidden-el">
+        <div class="badge"><i class="fa-solid fa-check-circle"></i> 5,000+ Students Made Their First Sale</div>
+        <h1>Stop Begging Leads. Start Closing! <br>Master <span>Affiliate Marketing</span>.</h1>
+        <p>Aapka personal AI Mentor jo aapko exact "Psychological Words" dega jisse leads khud payment screen bhejengi. Secret scripts, objection handling aur Live mentorship.</p>
+        <button class="cta-btn" onclick="showPage('paymentPage')">Unlock System @ ₹198</button>
+        
+        <div class="timer-box">
+            <div class="time-block"><span id="hr">01</span><p>HOURS</p></div>
+            <div class="time-block"><span id="min">45</span><p>MINS</p></div>
+            <div class="time-block"><span id="sec">30</span><p>SECS</p></div>
+        </div>
+    </section>
+
+    <!-- Social Proof Bar -->
+    <div class="proof-section hidden-el">
+        <div class="proof-grid">
+            <div class="proof-item"><i class="fa-solid fa-brain"></i> Psychological Scripts</div>
+            <div class="proof-item"><i class="fa-solid fa-headset"></i> 24/7 AI Mentor</div>
+            <div class="proof-item"><i class="fa-solid fa-sack-dollar"></i> High Conversion Rate</div>
+        </div>
+    </div>
+
+    <!-- REVIEWS SECTION -->
+    <section class="reviews-section">
+        <h2 class="section-title hidden-el">The Truth From People <span>Just Like You</span></h2>
+        
+        <div class="swipe-indicator hidden-el">
+            Swipe to read more success stories <i class="fa-solid fa-arrow-right-long"></i>
+        </div>
+
+        <div class="slider-wrapper">
+            <div class="reviews-slider">
+                <div class="review-card">
+                    <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                    <p class="review-text">"Pichle 2 mahine se 100+ leads aayi par sale 0 thi. Mentor Pro ki 'Feel-Felt-Found' script copy-paste ki, aur aaj pehli closing hui! 😭🔥"</p>
+                    <div class="reviewer"><div style="background:#ef4444;">R</div> Rahul Sharma</div>
+                </div>
+                <div class="review-card">
+                    <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                    <p class="review-text">"Jab koi lead bolti thi 'Paisa nahi hai', main chup ho jata tha. AI ne jo counter-question sikhaya, ab wahi log premium package le rahe hain."</p>
+                    <div class="reviewer"><div style="background:#f59e0b;">S</div> Sameer Khan</div>
+                </div>
+                <div class="review-card">
+                    <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i></div>
+                    <p class="review-text">"Leads fraud bol ke block kar deti thi. Yahan se trust building ke 3 step seekhe. Ab log khud samne se number save karke screenshot bhejte hain!"</p>
+                    <div class="reviewer"><div style="background:#3b82f6;">N</div> Neha Das</div>
+                </div>
+                <div class="review-card">
+                    <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                    <p class="review-text">"Organic lead generation ka module mast hai. Bina ek rupya lagaye Instagram se daily 15-20 highly targeted leads aa rahi hain. Value for money!"</p>
+                    <div class="reviewer"><div style="background:#10b981;">R</div> Rohan Jain</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bottom CTA -->
+    <section class="hero hidden-el" style="padding: 20px 20px 80px;">
+        <h2 style="font-size: 28px; margin-bottom: 15px;">Ameer Log Sochte Nahi, Action Lete Hain!</h2>
+        <p style="margin-bottom: 25px;">Jab tak aap soch rahe hain, koi aur aapki leads ko close kar raha hai. Abhi access lein.</p>
+        <button class="cta-btn" onclick="showPage('paymentPage')">Start My Journey Now <i class="fa-solid fa-arrow-right"></i></button>
+    </section>
+</div>
+
+<!-- ========================================== -->
+<!-- 2. PAYMENT PAGE                            -->
+<!-- ========================================== -->
+<div id="paymentPage" class="page">
+    <div class="form-container hidden-el">
+        <h2 style="margin-bottom: 5px;">Join The Elite Club 🚀</h2>
+        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">Complete your payment of <b>₹198</b> to unlock</p>
+        
+        <div class="form-group">
+            <label>Your Full Name</label>
+            <input type="text" id="payName" placeholder="Enter name" required>
+        </div>
+        <div class="form-group">
+            <label>WhatsApp Number</label>
+            <input type="tel" id="payPhone" placeholder="Enter number" required>
+        </div>
+        
+        <div style="background: rgba(0, 210, 255, 0.05); padding: 20px; border-radius: 12px; border: 1px dashed var(--border); margin: 20px 0;">
+            <p style="font-size: 15px; font-weight: bold; margin-bottom: 10px;">Scan QR to Pay <span style="color:var(--accent);">₹198</span></p>
+            <div class="qr-box">
+                <!-- 🚨 QR API Mein Automatic amount 198 set hai -->
+                <img id="qrImage" src="" alt="UPI QR">
+            </div>
+            <p style="font-size: 12px; color: var(--text-muted);" id="upiIdDisplay">UPI: Loading...</p>
+        </div>
+
+        <div class="form-group">
+            <label>Transaction UTR / Ref Number (12 Digits)</label>
+            <input type="text" id="payUtr" placeholder="E.g. 312345678901" required>
+        </div>
+        
+        <button class="cta-btn" style="width: 100%; font-size: 16px; padding: 14px;" onclick="submitPayment()">Submit Verification</button>
+    </div>
+</div>
+
+<!-- ========================================== -->
+<!-- 3. LOGIN PAGE                              -->
+<!-- ========================================== -->
+<div id="loginPage" class="page">
+    <div class="form-container hidden-el">
+        <div style="font-size: 45px; color: var(--accent); margin-bottom: 15px;"><i class="fa-solid fa-lock-open"></i></div>
+        <h2 style="margin-bottom: 5px;">Dashboard Login</h2>
+        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 25px;">Enter the access key provided by Admin</p>
+        
+        <div class="form-group">
+            <input type="text" id="accessKey" placeholder="Enter Key (e.g. MP-XYZ123)" required style="text-align: center; letter-spacing: 2px; font-weight: bold;">
+        </div>
+        <button class="cta-btn" style="width: 100%; font-size: 16px; padding: 14px;" onclick="verifyKey()">Access Now</button>
+    </div>
+</div>
+
+<!-- ========================================== -->
+<!-- 4. MAIN DASHBOARD                          -->
+<!-- ========================================== -->
+<div id="dashboardPage" class="page">
+    <div class="dashboard-layout">
+        
+        <!-- DASHBOARD SIDEBAR -->
+        <div class="dash-sidebar" id="dashboardSidebar">
+            <div class="menu-item active" onclick="switchTab('aiTab', this)"><i class="fa-solid fa-robot" style="width: 20px;"></i> AI Mentor</div>
+            <div class="menu-item" onclick="switchTab('liveTab', this)"><i class="fa-solid fa-video" style="width: 20px;"></i> Live Classes</div>
+            <div class="menu-item" onclick="switchTab('trainingTab', this)"><i class="fa-solid fa-book-open" style="width: 20px;"></i> Materials</div>
+        </div>
+
+        <div class="dash-content">
+            
+            <!-- ✨ NATIVE AI CHAT ENGINE (RAG + API ROTATION) ✨ -->
+            <div id="aiTab" class="dash-section active" style="height:100%;">
+                <div class="chat-wrapper">
+                    <!-- Chat Area -->
+                    <div class="chat-box" id="chatBox">
+                        <div class="message-row ai">
+                            <div class="avatar"><i class="fa-solid fa-robot"></i></div>
+                            <div class="msg-text">Hello! Main Mentor Pro hu, Juber Sir ki agency ka official AI Agent. Boliye, aapko Affiliate Marketing mein kya problem aa rahi hai? Muje aap Leads, Objections ya Closing ke baare me puch sakte hain.</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Input Area -->
+                    <div class="chat-input-area">
+                        <input type="text" id="aiInput" placeholder="Message your AI Mentor..." onkeypress="if(event.key === 'Enter') sendNativeMessage()">
+                        <button class="send-btn" onclick="sendNativeMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Session Tab -->
+            <div id="liveTab" class="dash-section" style="padding: 20px;">
+                <div style="background: var(--bg-card); padding: 25px; border-radius: 12px; border: 1px solid var(--border);">
+                    <h3 style="font-size: 20px;"><i class="fa-solid fa-satellite-dish" style="color:#ef4444; animation: pulse 2s infinite;"></i> Upcoming Masterclass</h3>
+                    <div id="liveDetails" style="margin-top: 20px; padding: 20px; background: var(--bg-dark); border-radius: 10px;">
+                        <p style="color: var(--text-muted);"><i class="fa-solid fa-circle-notch fa-spin"></i> Checking for updates...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Training Tab -->
+            <div id="trainingTab" class="dash-section" style="padding: 20px;">
+                <div style="background: var(--bg-card); padding: 25px; border-radius: 12px; border: 1px solid var(--border);">
+                    <h3 style="font-size: 20px;"><i class="fa-solid fa-file-arrow-down"></i> Study Material</h3>
+                    <div id="trainingDetails" style="margin-top: 20px; padding: 20px; background: var(--bg-dark); border-radius: 10px;">
+                        <p style="color: var(--text-muted);"><i class="fa-solid fa-circle-notch fa-spin"></i> Loading resources...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================== -->
+<!-- JAVASCRIPT, FIREBASE & AI LOGIC            -->
+<!-- ========================================== -->
+<script type="module">
+    // --- FIREBASE CONFIGURATION ---
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, get, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    // 🚨 YAHAN APNI FIREBASE CONFIG DAALEIN (Admin Panel wali same)
+    const firebaseConfig = {
+      apiKey: "AAPKI_FIREBASE_API_KEY", 
+      authDomain: "lafzomeet.firebaseapp.com",
+      databaseURL: "https://lafzomeet-default-rtdb.firebaseio.com",
+      projectId: "lafzomeet",
+      storageBucket: "lafzomeet.firebasestorage.app",
+      messagingSenderId: "324776514390",
+      appId: "1:324776514390:web:97baaf7788b69880013cf7"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    
+    // --- Global Variables for AI Routing ---
+    let adminUPI = "YOUR_UPI@YBL"; 
+    let apiKeysList = [];
+    let knowledgeModules = []; // Array of {title, content} from Admin Panel
+let activeAiModel = "gemini-2.0-flash"; // Default model
+let masterAiPrompt = ""; // Admin strict training rules
+
+    // --- Core UI & Timer Logic ---
+    setInterval(() => {
+        let s = parseInt(document.getElementById('sec').innerText);
+        let m = parseInt(document.getElementById('min').innerText);
+        if(s > 0) s--; else { s = 59; m--; }
+        document.getElementById('sec').innerText = s < 10 ? '0'+s : s;
+        document.getElementById('min').innerText = m < 10 ? '0'+m : m;
+    }, 1000);
+
+    window.toggleNavDropdown = function() { document.getElementById('mainNavDrop').classList.toggle('active'); }
+    document.addEventListener('click', function(e) { if (!e.target.closest('.menu-container')) document.getElementById('mainNavDrop').classList.remove('active'); });
+
+    // Logo Click Logic
+    window.handleLogoClick = function() {
+        if(localStorage.getItem('userKey')) showPage('dashboardPage'); 
+        else showPage('landingPage');
+    }
+
+    // Page Navigation Logic
+    window.showPage = function(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        document.getElementById('urgencyBar').style.display = pageId === 'landingPage' ? 'block' : 'none';
+
+        if(pageId === 'dashboardPage') {
+            document.getElementById('dashMenuBtn').style.display = 'block';
+            document.getElementById('menuStart').style.display = 'none';
+            document.getElementById('menuLogin').style.display = 'none';
+            document.getElementById('menuLogout').style.display = 'flex';
+            loadChatHistory(); // Load old chat from local storage
+        } else {
+            document.getElementById('dashMenuBtn').style.display = 'none';
+            document.getElementById('menuStart').style.display = 'flex';
+            document.getElementById('menuLogin').style.display = 'flex';
+            document.getElementById('menuLogout').style.display = 'none';
+        }
+        window.scrollTo(0,0);
+    }
+
+    window.switchTab = function(tabId, element) {
+        document.querySelectorAll('.dash-section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        element.classList.add('active');
+        if(window.innerWidth <= 768) document.getElementById('dashboardSidebar').classList.remove('open');
+    }
+    window.toggleDashSidebar = function() { document.getElementById('dashboardSidebar').classList.toggle('open'); }
+
+    // Scroll Animations
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('show-el'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.hidden-el').forEach((el) => observer.observe(el));
+
+    // --- Firebase Fetch Logic ---
+    async function loadSettings() {
+        try {
+            const snap = await get(ref(db, 'adminSettings'));
+            if (snap.exists()) {
+                const data = snap.val();
+                
+                // Set UPI QR Code
+                if(data.upiId) {
+                    adminUPI = data.upiId;
+                    document.getElementById('qrImage').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=${adminUPI}&pn=MentorPro&am=198&cu=INR`;
+                    document.getElementById('upiIdDisplay').innerText = `UPI: ${adminUPI}`;
+                }
+
+                // AI Load Balancing (Get Multiple API Keys)
+                if(data.apiKeys) {
+                    apiKeysList = Object.values(data.apiKeys);
+                }
+
+                // Smart Knowledge Base Router Data
+                if(data.knowledgeBase) {
+                    knowledgeModules = Object.values(data.knowledgeBase);
+                }
+// Fetch Active AI Model Selected by Admin
+                if(data.activeModel) {
+                    activeAiModel = data.activeModel;
+                }
+
+                // Fetch Master Prompt Rules
+                if(data.masterPrompt) {
+                    masterAiPrompt = data.masterPrompt;
+                }
+
+                // Live Session
+                let liveHTML = "";
+                if(data.liveTitle) liveHTML += `<h4 style="margin-bottom:10px; font-size:18px;">${data.liveTitle}</h4>`;
+                if(data.liveTime) liveHTML += `<p style="margin-bottom:20px; font-size:15px; color:var(--accent);"><i class="fa-regular fa-calendar-days"></i> ${data.liveTime}</p>`;
+                if(data.liveLink) liveHTML += `<a href="${data.liveLink}" target="_blank" class="cta-btn" style="text-decoration:none; text-align:center; padding:12px 25px; font-size:15px; display:inline-block;"><i class="fa-solid fa-play"></i> Join Class Now</a>`;
+                document.getElementById('liveDetails').innerHTML = liveHTML || "<p style='color:var(--text-muted);'>No upcoming session scheduled.</p>";
+
+                // Material / Training Link
+                let trainHTML = "";
+                if(data.trainingLink) trainHTML += `<a href="${data.trainingLink}" target="_blank" style="display:inline-flex; align-items:center; gap:8px; background:var(--accent); color:#000; padding:10px 20px; border-radius:8px; text-decoration:none; font-weight:700;"><i class="fa-solid fa-cloud-arrow-down"></i> Download Main File</a>`;
+                document.getElementById('trainingDetails').innerHTML = trainHTML || "<p style='color:var(--text-muted);'>No materials yet.</p>";
+            }
+        } catch(e) { console.error(e); }
+    }
+
+    // --- Auth & Payment ---
+    window.submitPayment = function() {
+        const name = document.getElementById('payName').value.trim();
+        const phone = document.getElementById('payPhone').value.trim();
+        const utr = document.getElementById('payUtr').value.trim();
+        if(!name || !phone || !utr) return alert("Pehle details bharein!");
+        push(ref(db, 'pendingPayments'), { name, phone, utr, date: new Date().toLocaleString(), status: "Pending" })
+            .then(() => { alert("✅ Request Sent! Admin will verify and send Key on WhatsApp."); showPage('loginPage'); });
+    }
+
+    window.verifyKey = async function() {
+        const keyInput = document.getElementById('accessKey').value.trim();
+        if(!keyInput) return alert("Key enter karein!");
+        try {
+            const snap = await get(ref(db, `accessKeys/${keyInput}`));
+            if(snap.exists()) {
+                const keyData = snap.val();
+                const now = new Date().getTime();
+                const expiry = new Date(keyData.expiryDate).getTime();
+                if(keyData.status === "Revoked") alert("⚠️ Key is Blocked.");
+                else if(now > expiry) alert("⚠️ Key has Expired.");
+                else {
+                    localStorage.setItem('userKey', keyInput);
+                    showPage('dashboardPage');
+                    loadSettings();
+                }
+            } else alert("❌ Invalid Key!");
+        } catch(e) { alert("Network error!"); }
+    }
+
+    window.logout = function() {
+        if(confirm("Logout karein?")) {
+            localStorage.removeItem('userKey');
+            document.getElementById('accessKey').value = "";
+            showPage('landingPage');
+        }
+    }
+
+    window.onload = function() {
+        if(localStorage.getItem('userKey')) { showPage('dashboardPage'); loadSettings(); } 
+        else { showPage('landingPage'); loadSettings(); }
+    }
+
+    // ========================================================
+    // 🔥 THE INTELLIGENT AI ENGINE (RAG + Load Balancer) 🔥
+    // ========================================================
+    
+    let chatHistory = [];
+
+    // Memory Functions
+    function saveChatMemory() { localStorage.setItem('mentorAiMemory', JSON.stringify(chatHistory)); }
+    function loadChatHistory() {
+        const saved = localStorage.getItem('mentorAiMemory');
+        if(saved) {
+            chatHistory = JSON.parse(saved);
+            const box = document.getElementById('chatBox');
+            box.innerHTML = `<div class="message-row ai"><div class="avatar"><i class="fa-solid fa-robot"></i></div><div class="msg-text">Hello! Welcome back.</div></div>`;
+            chatHistory.forEach(msg => {
+                const isUser = msg.role === 'user';
+                appendMessageUI(isUser ? 'user' : 'ai', isUser ? msg.parts[0].text : marked.parse(msg.parts[0].text));
+            });
+            box.scrollTop = box.scrollHeight;
+        }
+    }
+
+    function appendMessageUI(sender, text, id=null) {
+        const box = document.getElementById('chatBox');
+        const html = `
+            <div class="message-row ${sender}" ${id ? `id="${id}"` : ''}>
+                <div class="avatar">${sender === 'user' ? 'U' : '<i class="fa-solid fa-robot"></i>'}</div>
+                <div class="msg-text">${text}</div>
+            </div>`;
+        box.insertAdjacentHTML('beforeend', html);
+        box.scrollTop = box.scrollHeight;
+    }
+
+    // Keyword Context Router (Saves Token & Finds Exact Answer)
+    function getContextBasedOnKeywords(userMessage) {
+        let matchedContext = "Tum ek professional Affiliate Marketing Mentor ho. Tumhari agency ka naam Affiliate Marketing Agency hai. Owner ka naam Juber hai. User ko basic motivate karo aur guide karo."; 
+        let msgLower = userMessage.toLowerCase();
+
+        // Check user message against all Admin Knowledge Modules
+        for(let i=0; i<knowledgeModules.length; i++) {
+            let item = knowledgeModules[i];
+            let keywords = item.title.toLowerCase().split(','); // Admin gives title like: "leads, traffic, ad"
+            
+            let isMatch = keywords.some(kw => msgLower.includes(kw.trim()));
+            if(isMatch) {
+                matchedContext = item.content; // Found exact module, e.g., "Objection Handling"
+                break;
+            }
+        }
+        return matchedContext;
+    }
+
+    window.sendNativeMessage = async function() {
+        const input = document.getElementById('aiInput');
+        const message = input.value.trim();
+        if(!message) return;
+
+        // 1. Show User Msg UI
+        appendMessageUI('user', message);
+        input.value = "";
+        
+        const loadId = "load-" + Date.now();
+        appendMessageUI('ai', '<span class="typing-indicator"><i class="fa-solid fa-circle-notch fa-spin"></i> Searching best answer...</span>', loadId);
+
+        // Memory Logic: Keep ONLY last 6 messages to save tokens! (Short-term memory)
+        chatHistory.push({ role: "user", parts: [{ text: message }] });
+        let apiHistory = chatHistory.length > 6 ? chatHistory.slice(chatHistory.length - 6) : chatHistory;
+        saveChatMemory();
+
+        try {
+            // 2. Time-Based Load Balancer: Rotate Key Every 10 Minutes
+            if(!apiKeysList || apiKeysList.length === 0) throw new Error("System configuration pending by Admin.");
+            
+            // 10 Min calculation formula (Sabhi users aur admin panel me exact sync rahega)
+            const tenMins = 10 * 60 * 1000;
+            const activeKeyIndex = Math.floor(Date.now() / tenMins) % apiKeysList.length;
+            const activeKey = apiKeysList[activeKeyIndex];
+
+            // 3. Strict Context Routing (Juber's Rules + Module Data)
+            const activeContext = getContextBasedOnKeywords(message);
+            const systemPrompt = `CORE IDENTITY: Tum 'Mentor Pro' ho, ek professional Affiliate Marketing Mentor. Tumhari community "Affiliate Marketing Agency" hai aur tumhare Owner "Juber" hain.
+
+STRICT INSTRUCTIONS FROM OWNER (HAMESHA FOLLOW KARNA HAI):
+${masterAiPrompt}
+
+USER KA SAWAL AUR SPECIFIC TRAINING DATA (Is Data ka use karke proper Hinglish me short and direct jawab do):
+${activeContext}
+
+WARNING: Tumhe SEO, Blogging, YouTube earning, ya free platforms ke baare me KABHI NAHI bolna hai. Sirf WhatsApp marketing, Instagram DM, Calling, aur Course Selling ki baat karni hai.`;
+
+            // 4. Send to Dynamic Gemini API using 10-Min Active Key
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/${activeAiModel}:generateContent?key=${activeKey}`;
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    "system_instruction": { "parts": [{ "text": systemPrompt }] },
+                    "contents": apiHistory
+                })
+            });
+
+            const data = await response.json();
+            document.getElementById(loadId).remove();
+
+            if(data.error) {
+                appendMessageUI('ai', `⚠️ Connection Limit Reached: ${data.error.message}`);
+                chatHistory.pop(); // Remove failed msg
+            } else {
+                const aiResponse = data.candidates[0].content.parts[0].text;
+                appendMessageUI('ai', marked.parse(aiResponse));
+                chatHistory.push({ role: "model", parts: [{ text: aiResponse }] });
+                saveChatMemory();
+            }
+        } catch(e) {
+            document.getElementById(loadId).remove();
+            appendMessageUI('ai', `⚠️ Error: ${e.message}`);
+            chatHistory.pop();
+        }
+    }
+</script>
+
+</body>
+</html>
